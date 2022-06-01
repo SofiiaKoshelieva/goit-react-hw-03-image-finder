@@ -3,6 +3,7 @@ import ApiService from './ApiService';
 import ImageGalleryItem from './ImageGalleryItem';
 import Button from './Button';
 import Modal from './Modal';
+import Loader from './Loader';
 import s from './Styles.module.css';
 const apiService = new ApiService();
 class ImageGallery extends Component {
@@ -54,7 +55,9 @@ class ImageGallery extends Component {
 
   render() {
     const { result, status, showModal, largeImageURL, totalHits } = this.state;
-
+    if (status === 'pending') {
+      return <Loader />;
+    }
     if (status === 'resolved') {
       return (
         <div>
@@ -67,12 +70,13 @@ class ImageGallery extends Component {
           <ul className={s.imageGallery}>
             <ImageGalleryItem data={result} openModal={this.openModal} />
           </ul>
-
-          <Button
-            result={this.props.result}
-            hits={totalHits}
-            onClick={this.onLoadMore}
-          />
+          {totalHits > 12 && (
+            <Button
+              result={this.props.result}
+              hits={totalHits}
+              onClick={this.onLoadMore}
+            />
+          )}
         </div>
       );
     }
